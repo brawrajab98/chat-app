@@ -8,7 +8,22 @@ class AuthSreen extends StatefulWidget {
 }
 
 class _AuthSreenState extends State<AuthSreen> {
+  final _formKey = GlobalKey<FormState>();
   var _isLogin = true;
+  var _enteredEmail = "";
+  var _enteredPassword = "";
+
+  void _submit() {
+    final isValid = _formKey.currentState!.validate();
+
+    if (isValid) {
+      // trigers onsave on the TextFormFields
+      _formKey.currentState!.save();
+      print(_enteredEmail);
+      print(_enteredPassword);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,26 +51,47 @@ class _AuthSreenState extends State<AuthSreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Form(
+                      key: _formKey,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const TextField(
-                            decoration: InputDecoration(
+                          TextFormField(
+                            decoration: const InputDecoration(
                               labelText: 'Email Address',
                             ),
                             keyboardType: TextInputType.emailAddress,
                             autocorrect: false,
                             textCapitalization: TextCapitalization.none,
+                            validator: (value) {
+                              if (value == null ||
+                                  value.trim().isEmpty ||
+                                  !value.contains('@')) {
+                                return 'Please enter a valid email address.';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _enteredEmail = value!;
+                            },
                           ),
-                          const TextField(
-                            decoration: InputDecoration(
+                          TextFormField(
+                            decoration: const InputDecoration(
                               labelText: 'Password ',
                             ),
                             obscureText: true,
+                            validator: (value) {
+                              if (value == null || value.trim().length < 6) {
+                                return 'Password must be at least 6 characters long';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _enteredPassword = value!;
+                            },
                           ),
                           const SizedBox(height: 12),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: _submit,
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: Theme.of(context)
                                     .colorScheme
