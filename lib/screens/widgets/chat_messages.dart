@@ -16,9 +16,7 @@ class _ChatMessagesState extends State<ChatMessages> {
     final fcm = FirebaseMessaging.instance;
 
     await fcm.requestPermission();
-    final token = await fcm.getToken();
-
-    print(token);
+    fcm.subscribeToTopic('chat');
   }
 
   @override
