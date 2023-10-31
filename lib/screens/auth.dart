@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:chat_app/screens/widgets/use_image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 final _firebase = FirebaseAuth.instance;
@@ -30,7 +31,7 @@ class _AuthSreenState extends State<AuthSreen> {
     if (isValid) {
       // trigers onsave on the TextFormFields
       _formKey.currentState!.save();
-// a
+
       try {
         if (_isLogin) {
           final userCredentials = await _firebase.signInWithEmailAndPassword(
@@ -39,6 +40,15 @@ class _AuthSreenState extends State<AuthSreen> {
           final userCredentials =
               await _firebase.createUserWithEmailAndPassword(
                   email: _enteredEmail, password: _enteredPassword);
+
+          final storageRef = FirebaseStorage.instance
+              .ref()
+              .child('user_images')
+              .child('${userCredentials.user!.uid}.jpg');
+
+          await storageRef.putFile(_selectedImage!);
+          final imageUrl = await storageRef.getDownloadURL();
+          print(imageUrl);
         }
       } on FirebaseAuthException catch (error) {
         ScaffoldMessenger.of(context).clearSnackBars();
