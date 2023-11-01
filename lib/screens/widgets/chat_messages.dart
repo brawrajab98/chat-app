@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ChatMessages extends StatefulWidget {
   const ChatMessages({super.key});
@@ -73,6 +74,7 @@ class _ChatMessagesState extends State<ChatMessages> {
               return MessageBubble.next(
                 message: chatMessage['text'],
                 isMe: authenticatedUser.uid == chatMessage['userId'],
+                time: chatMessage['createdAt'].toDate(),
               );
             } else {
               return MessageBubble.first(
@@ -80,6 +82,7 @@ class _ChatMessagesState extends State<ChatMessages> {
                 username: chatMessage['username'],
                 message: chatMessage['text'],
                 isMe: authenticatedUser.uid == chatMessage['userId'],
+                time: chatMessage['createdAt'].toDate(),
               );
             }
           },

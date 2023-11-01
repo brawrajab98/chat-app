@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 // A MessageBubble for showing a single chat message on the ChatScreen.
 class MessageBubble extends StatelessWidget {
@@ -9,6 +10,7 @@ class MessageBubble extends StatelessWidget {
     required this.username,
     required this.message,
     required this.isMe,
+    required this.time,
   }) : isFirstInSequence = true;
 
   // Create a amessage bubble that continues the sequence.
@@ -16,6 +18,7 @@ class MessageBubble extends StatelessWidget {
     super.key,
     required this.message,
     required this.isMe,
+    required this.time,
   })  : isFirstInSequence = false,
         userImage = null,
         username = null;
@@ -35,6 +38,7 @@ class MessageBubble extends StatelessWidget {
   // Not required if the message is not the first in a sequence.
   final String? username;
   final String message;
+  final DateTime time;
 
   // Controls how the MessageBubble will be aligned.
   final bool isMe;
@@ -123,17 +127,35 @@ class MessageBubble extends StatelessWidget {
                       vertical: 4,
                       horizontal: 12,
                     ),
-                    child: Text(
-                      message,
-                      style: TextStyle(
-                        // Add a little line spacing to make the text look nicer
-                        // when multilined.
-                        height: 1.3,
-                        color: isMe
-                            ? Colors.black87
-                            : theme.colorScheme.onSecondary,
-                      ),
-                      softWrap: true,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          message,
+                          style: TextStyle(
+                            // Add a little line spacing to make the text look nicer
+                            // when multilined.
+                            height: 1.3,
+                            color: isMe
+                                ? Colors.black87
+                                : theme.colorScheme.onSecondary,
+                          ),
+                          softWrap: true,
+                        ),
+                        Text(
+                          DateFormat('hh:mm a').format(time),
+                          style: TextStyle(
+                            // Add a little line spacing to make the text look nicer
+                            // when multilined.
+                            height: 2.25,
+                            fontSize: 10,
+                            color: isMe
+                                ? Colors.black87
+                                : theme.colorScheme.onInverseSurface,
+                          ),
+                          softWrap: true,
+                        ),
+                      ],
                     ),
                   ),
                 ],
